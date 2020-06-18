@@ -42,14 +42,12 @@
             };
             
             function send(method) {
-                alert(method);
-                
-                <!-- socket.send(JSON.stringify( -->
-                    <!-- { -->
-                        <!-- method: method -->
-                        <!-- id:room.id -->
-                    <!-- } -->
-                <!-- )); -->
+                socket.send(JSON.stringify(
+                    {
+                        method: method
+                        id:room.value
+                    }
+                ));
             }
         </script>
     </body>
