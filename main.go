@@ -19,8 +19,8 @@ var upgrader = websocket.Upgrader{}
 // クライアントからは JSON 形式で受け取る 
 type Post struct {
     // Message string `json:message`
-    Method string `json:method`
-    Id     int    `json:id`
+    Method string `json:Method`
+    Id     int    `json:Id`
 }
 
 // クライアントのハンドラ
