@@ -26,9 +26,9 @@
         <div id="call"></div>
         
         <script>
-            var room = document.getElementByID("room");
-            var help = document.getElementByID("help");
-            var call = document.getElementByID("call");
+            var room = document.getElementById("room");
+            var help = document.getElementById("help");
+            var call = document.getElementById("call");
             var socket = new WebScoket("wss://" + window.location.host + "/update");
             
             socket.onopen = function() {
