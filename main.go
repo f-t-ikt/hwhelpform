@@ -55,7 +55,11 @@ func main() {
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         http.ServeFile(w, r, "index.html")
     })
-
+    
+    http.HandleFunc("/teacher", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "teacher.html")
+    })
+    
     http.HandleFunc("/chat", HandleClients)
     err := http.ListenAndServe(":8080", nil)
     if err != nil {
