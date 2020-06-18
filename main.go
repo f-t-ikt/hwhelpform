@@ -60,6 +60,10 @@ func main() {
         http.ServeFile(w, r, "teacher.html")
     })
     
+    http.HandleFunc("/student", func(w http.ResponseWriter, r *http.Request) {
+        http.ServeFile(w, r, "student.html")
+    })
+    
     http.HandleFunc("/chat", HandleClients)
     err := http.ListenAndServe(":8080", nil)
     if err != nil {
