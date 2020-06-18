@@ -46,6 +46,12 @@
                     help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<br>" + "</div>";
                 } else if (post.Method == "call") {
                     call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<br>" + "</div>";
+                } else if (post.Method == "deleteHelp") {
+                    var element = document.getElementById(post.Id);
+                    help.removeChild(element);
+                } else if (post.Method == "deleteCall") {
+                    var element = document.getElementById(post.Id);
+                    call.removeChild(element);
                 }
             };
             
