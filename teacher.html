@@ -28,16 +28,16 @@
             socket.onmessage = function(e) {
                 var post = JSON.parse(e.data);
                 if (post.Method == "help") {
-                    help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ")>確認</button>" + "<br>" + "</div>";
+                    help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ",\"Help\")>確認</button>" + "<br>" + "</div>";
                 } else if (post.Method == "call") {
-                    call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ")>確認</button>" + "<br>" + "</div>";
+                    call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ",\"Call\")>確認</button>" + "<br>" + "</div>";
                 }
             };
             
-            function deletePost(id) {
+            function deletePost(id, field) {
                 socket.send(JSON.stringify(
                     {
-                        Method: "delete",
+                        Method: "delete" + field,
                         Id: id
                     }
                 ));
