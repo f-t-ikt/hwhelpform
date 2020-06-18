@@ -29,7 +29,7 @@
             var room = document.getElementById("room");
             var help = document.getElementById("help");
             var call = document.getElementById("call");
-            var socket = new WebScoket("ws://" + window.location.host + "/update");
+            var socket = new WebSocket("ws://" + window.location.host + "/update");
             
             socket.onopen = function() {
                 help.innerHTML += "LOAD\n";
@@ -42,12 +42,13 @@
             };
             
             function send(method) {
-                socket.send(JSON.stringify(
-                    {
-                        method: method
-                        id:room.value
-                    }
-                ));
+                alert(method);
+                <!-- socket.send(JSON.stringify( -->
+                    <!-- { -->
+                        <!-- method: method -->
+                        <!-- id:room.value -->
+                    <!-- } -->
+                <!-- )); -->
             }
         </script>
     </body>
