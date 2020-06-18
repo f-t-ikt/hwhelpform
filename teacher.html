@@ -28,9 +28,9 @@
             socket.onmessage = function(e) {
                 var post = JSON.parse(e.data);
                 if (post.Method == "help") {
-                    help.innerHTML += post.Id + "<button onclick=deletePost(" + post.Id + ")>確認</button>" + "<br>";
+                    help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ")>確認</button>" + "<br>" + "</div>";
                 } else if (post.Method == "call") {
-                    call.innerHTML += post.Id + "<button onclick=deletePost(" + post.Id + ")>確認</button>" + "<br>";
+                    call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ")>確認</button>" + "<br>" + "</div>";
                 }
             };
             
