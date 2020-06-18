@@ -43,9 +43,9 @@
             socket.onmessage = function(e) {
                 var post = JSON.parse(e.data);
                 if (post.Method == "help") {
-                    help.innerHTML += post.Id + "<br>"
+                    help.innerHTML += post.Id + "<br>";
                 } else if (post.Method == "call") {
-                    call.innerHTML += post.Id + "<br>"
+                    call.innerHTML += post.Id + "<br>";
                 }
             };
             
