@@ -64,7 +64,7 @@ func main() {
         http.ServeFile(w, r, "student.html")
     })
     
-    http.HandleFunc("/chat", HandleClients)
+    http.HandleFunc("/update", HandleClients)
     err := http.ListenAndServe(":8080", nil)
     if err != nil {
         log.Fatal("error starting http server::", err)
