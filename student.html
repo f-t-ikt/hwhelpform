@@ -24,5 +24,31 @@
         <button>先生を呼ぶ</button>
         <div id="help"></div>
         <div id="call"></div>
+        
+        <script>
+            var room = document.getElementByID("room");
+            var help = document.getElementByID("help");
+            var call = document.getElementByID("call");
+            var socket = new WebScoket("wss://" + window.location.host + "/update");
+            
+            socket.onopen = function() {
+                help.innerHTML += "LOAD\n";
+                call.innerHTML += "LOAD\n";
+            };
+            
+            socket.onmessage = function(e) {
+                help.innerHTML += e.data + "\n";
+                call.innerHTML += e.data + "\n";
+            };
+            
+            function send(method) {
+                socket.send(JSON.stringify(
+                    {
+                        method: method
+                        id:room.id
+                    }
+                ));
+            }
+        </script>
     </body>
 </html>
