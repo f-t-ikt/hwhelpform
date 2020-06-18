@@ -44,6 +44,14 @@
                     <!-- } -->
                 <!-- )); -->
             <!-- } -->
+            function deletePost(id) {
+                socket.send(JSON.stringify(
+                    {
+                        Method: "delete",
+                        Id: id
+                    }
+                ));
+            };
         </script>
     </body>
 </html>
