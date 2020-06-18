@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>WebSocket Server</title>
+</head>
+<body>
+    <input id="input" type="text" />
+    <button onclick="send()">Send</button>
+    <pre id="output"></pre>
+    <script>
+        var input = document.getElementById('input');
+        var output = document.getElementById('output');
+        var socket = new WebSocket("ws://" + window.location.host + "/chat");
+
+        socket.onopen = function() {
+           output.innerHTML += "Connection OK\n";
+        };
+
+        socket.onmessage = function(e) {
+            output.innerHTML += "Get message from server: " + e.data + "\n";
+        };
+
+        function send() {
+            socket.send(JSON.stringify(
+                {
+                    message: input.value
+                }
+            ));
+            input.value = "";
+        };
+    </script>
+</body>
+</html>
