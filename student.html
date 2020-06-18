@@ -47,6 +47,7 @@
             
             function send(method) {
                 alert(method);
+                if (room.value == "") return;
                 socket.send(JSON.stringify(
                     {
                         Method: method,
