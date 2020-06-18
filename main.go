@@ -38,17 +38,17 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
     clients[websocket] = true
 
     for {
-        var message Post
+        var post Post
         // メッセージ読み込み
-        err := websocket.ReadJSON(&message)
+        err := websocket.ReadJSON(&post)
         if err != nil {
-            log.Printf("error occurred while reading message: %v", err)
+            log.Printf("error occurred while reading post: %v", err)
             delete(clients, websocket)
             break
         }
         
        // メッセージを受け取る
-        broadcast <- message
+        broadcast <- post
     }
 }
 
@@ -77,13 +77,13 @@ func main() {
 func broadcastPostsToClients() {
     for {
         // メッセージ受け取り
-        message := <-broadcast
+        post := <-broadcast
         // クライアントの数だけループ
         for client := range clients {
         //　書き込む
-            err := client.WriteJSON(message)
+            err := client.WriteJSON(post)
             if err != nil {
-                log.Printf("error occurred while writing message to client: %v", err)
+                log.Printf("error occurred while writing post to client: %v", err)
                 client.Close()
                 delete(clients, client)
             }
