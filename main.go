@@ -25,8 +25,6 @@ type Post struct {
 
 // クライアントのハンドラ
 func HandleClients(w http.ResponseWriter, r *http.Request) {
-    // ゴルーチンで起動
-    go broadcastPostsToClients()
     // websocket の状態を更新
     websocket, err := upgrader.Upgrade(w, r, nil)
     if err != nil {
@@ -67,6 +65,8 @@ func main() {
     })
     
     http.HandleFunc("/update", HandleClients)
+    go broadcastPostsToClients()
+    
     err := http.ListenAndServe(":8080", nil)
     if err != nil {
         log.Fatal("error starting http server::", err)
