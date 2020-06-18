@@ -37,8 +37,12 @@
             };
             
             socket.onmessage = function(e) {
-                help.innerHTML += e.data + "\n";
-                call.innerHTML += e.data + "\n";
+                var post = JSON.parse(e.data);
+                if (post.Method == "help") {
+                    help.innerHTML += post.Id + "<br>"
+                } else if (post.Method == "call") {
+                    call.innerHTML += post.Id + "<br>"
+                }
             };
             
             function send(method) {
