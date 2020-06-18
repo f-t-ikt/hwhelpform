@@ -46,7 +46,7 @@
                 socket.send(JSON.stringify(
                     {
                         method: method,
-                        id: room.value
+                        id: Number(room.value)
                     }
                 ));
             }
