@@ -11,20 +11,22 @@ import (
 var clients = make(map[*websocket.Conn]bool)
 
 // クライアントから受け取るメッセージを格納
-var broadcast = make(chan Message)
+var broadcast = make(chan Post)
 
 // WebSocket 更新用
 var upgrader = websocket.Upgrader{}
 
 // クライアントからは JSON 形式で受け取る 
-type Message struct {
-    Message string `json:message`
+type Post struct {
+    // Message string `json:message`
+    method string `json:method`
+    id     int    `json:id`
 }
 
 // クライアントのハンドラ
 func HandleClients(w http.ResponseWriter, r *http.Request) {
     // ゴルーチンで起動
-    go broadcastMessagesToClients()
+    go broadcastPostsToClients()
     // websocket の状態を更新
     websocket, err := upgrader.Upgrade(w, r, nil)
     if err != nil {
@@ -36,7 +38,7 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
     clients[websocket] = true
 
     for {
-        var message Message
+        var message Post
         // メッセージ読み込み
         err := websocket.ReadJSON(&message)
         if err != nil {
@@ -72,7 +74,7 @@ func main() {
     }
 }
 
-func broadcastMessagesToClients() {
+func broadcastPostsToClients() {
     for {
         // メッセージ受け取り
         message := <-broadcast
