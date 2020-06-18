@@ -7,5 +7,37 @@
     
     <body>
         <p>教員用画面</p>
+        
+        <script>
+            var room = document.getElementById("room");
+            var help = document.getElementById("help");
+            var call = document.getElementById("call");
+            var socket = new WebSocket("ws://" + window.location.host + "/update");
+            
+            socket.onopen = function() {
+                help.innerHTML += "LOAD\n";
+                call.innerHTML += "LOAD\n";
+            };
+            
+            socket.onmessage = function(e) {
+                var post = JSON.parse(e.data);
+                if (post.Method == "help") {
+                    help.innerHTML += post.Id + "<br>"
+                } else if (post.Method == "call") {
+                    call.innerHTML += post.Id + "<br>"
+                }
+            };
+            
+            <!-- function send(method) { -->
+                <!-- alert(method); -->
+                <!-- if (room.value == "") return; -->
+                <!-- socket.send(JSON.stringify( -->
+                    <!-- { -->
+                        <!-- Method: method, -->
+                        <!-- Id: Number(room.value) -->
+                    <!-- } -->
+                <!-- )); -->
+            <!-- } -->
+        </script>
     </body>
 </html>
