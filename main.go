@@ -44,6 +44,7 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
             delete(clients, websocket)
             break
         }
+        
        // メッセージを受け取る
         broadcast <- message
     }
@@ -79,4 +80,3 @@ func broadcastMessagesToClients() {
         }
     }
 }
-
