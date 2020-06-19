@@ -42,10 +42,15 @@ func (il *IdList) Add(v interface{}) *list.Element {
     retunr il.list.PushBack(v)
 }
 
-func (il *IdList) Remove(e *list.Element) interface{} {
+func (il *IdList) Remove(v interface{}) interface{} {
     il.Lock()
     defer il.Unlock()
-    return il.list.Remove(e)
+    for e := il.list.Front(); e != nil; e = e.Next() {
+        if e.Value == v {
+            return il.list.Remove(e)
+        }
+    }
+    return nil
 }
 
 func (il *IdList) Contains(v interface{}) bool {
