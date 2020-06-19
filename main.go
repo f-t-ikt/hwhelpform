@@ -36,6 +36,12 @@ func NewIdList() *IdList {
     }
 }
 
+func (il *IdList) Add(v interface{}) *list.Element {
+    il.Lock()
+    defer il.Unlock()
+    retunr il.list.PushBack(v)
+}
+
 // クライアントのハンドラ
 func HandleClients(w http.ResponseWriter, r *http.Request) {
     // websocket の状態を更新
