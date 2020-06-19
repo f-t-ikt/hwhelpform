@@ -60,6 +60,8 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
             procCall(&post)
         } else if post.Method == "deleteHelp" {
             procDeleteHelp(&post)
+        } else if post.Method == "deleteCall" {
+            procDeleteCall(&post)
         }
     }
 }
@@ -164,6 +166,11 @@ func procCall(post *Post) {
 
 func procDeleteHelp(post *Post) {
     helpList.Remove(post.Id)
+    broadcast <- *post
+}
+
+func procDeleteCall(post *Post) {
+    callList.Remove(post.Id)
     broadcast <- *post
 }
 
