@@ -56,6 +56,8 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
         // broadcast <- post
         if post.Method == "help" {
             procHelp(&post)
+        } else if post.Method == "call" {
+            procCall(&post)
         }
     }
 }
@@ -136,6 +138,25 @@ func procHelp(post *Post) {
     }
     
     helpList.Add(id)
+    broadcast <- *post
+}
+
+func procCall(post *Post) {
+    id := post.Id
+    if callList.Contains(id) {
+        return
+    }
+    
+    if helpList.Contains(id) {
+        helpList.Remove(id)
+        del := Post {
+            Method: "deleteHelp",
+            Id: id,
+        }
+        broadcast <- del
+    }
+    
+    callList.Add(id)
     broadcast <- *post
 }
 
