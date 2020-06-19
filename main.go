@@ -48,6 +48,17 @@ func (il *IdList) Remove(e *list.Element) interface{} {
     return il.list.Remove(e)
 }
 
+func (il *IdList) Contains(v interface{}) bool {
+    il.Lock()
+    defer il.Unlock()
+    for e := il.list.Front(); e != nil; e = e.Next() {
+        if e.Value == v {
+            return true
+        }
+    }
+    return false
+}
+
 // クライアントのハンドラ
 func HandleClients(w http.ResponseWriter, r *http.Request) {
     // websocket の状態を更新
