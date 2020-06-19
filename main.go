@@ -62,6 +62,8 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
             procDeleteHelp(&post)
         } else if post.Method == "deleteCall" {
             procDeleteCall(&post)
+        } else {
+            log.Printf("unknown post: %v", post)
         }
     }
 }
