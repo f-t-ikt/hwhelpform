@@ -80,6 +80,24 @@ func main() {
     }
 }
 
+func initialBroadcast(client *websocket.Conn) {
+    helpList.Each(func(v interface{}) {
+        post := Post {
+            Method: "help",
+            Id: v.(int),
+        }
+        client.WriteJSON(post)
+    })
+    
+    callList.Each(func(v interface{}) {
+        post := Post {
+            Method: "call",
+            Id: v.(int),
+        }
+        client.WriteJSON(post)
+    })
+}
+
 func broadcastPostsToClients() {
     for {
         // メッセージ受け取り
