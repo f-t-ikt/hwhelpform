@@ -3,12 +3,14 @@ package main
 import (
     "log"
     "net/http"
+    "sync"
 
     "github.com/gorilla/websocket"
 )
 
 // WebSocket サーバーにつなぎにいくクライアント
-var clients = make(map[*websocket.Conn]bool)
+// var clients = make(map[*websocket.Conn]bool)
+var clients sync.Map
 
 // クライアントから受け取るメッセージを格納
 var broadcast = make(chan Post)
@@ -33,7 +35,8 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
     // websocket を閉じる
     defer websocket.Close()
 
-    clients[websocket] = true
+    // clients[websocket] = true
+    clients.Store(websocket, true)
 
     for {
         var post Post
@@ -41,7 +44,8 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
         err := websocket.ReadJSON(&post)
         if err != nil {
             log.Printf("error occurred while reading post: %v", err)
-            delete(clients, websocket)
+            // delete(clients, websocket)
+            clients.Delete(websocket)
             break
         }
         
@@ -79,14 +83,23 @@ func broadcastPostsToClients() {
         // メッセージ受け取り
         post := <-broadcast
         // クライアントの数だけループ
-        for client := range clients {
+        // for client := range clients {
         //　書き込む
-            err := client.WriteJSON(post)
+            // err := client.WriteJSON(post)
+            // if err != nil {
+                // log.Printf("error occurred while writing post to client: %v", err)
+                // client.Close()
+                // delete(clients, client)
+            // }
+        // }
+        clients.Range(func(client, stored interface{})bool {
+            err := client.(*websocket.Conn).WriteJSON(post)
             if err != nil {
                 log.Printf("error occurred while writing post to client: %v", err)
-                client.Close()
-                delete(clients, client)
+                client.(*websocket.Conn).Close()
+                clients.Delete(client)
             }
-        }
+            return true
+        })
     }
 }
