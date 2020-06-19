@@ -43,3 +43,11 @@ func (il *IdList) Contains(v interface{}) bool {
     }
     return false
 }
+
+func (il *IdList) Each(f func(v interface{})) {
+    il.Lock()
+    defer il.Unlock()
+    for e := il.list.Front(); e != nil; e = e.Next() {
+        f(e.Value)
+    }
+}
