@@ -42,6 +42,12 @@ func (il *IdList) Add(v interface{}) *list.Element {
     retunr il.list.PushBack(v)
 }
 
+func (il *IdList) Remove(e *list.Element) interface{} {
+    il.Lock()
+    defer il.Unlock()
+    return il.list.Remove(e)
+}
+
 // クライアントのハンドラ
 func HandleClients(w http.ResponseWriter, r *http.Request) {
     // websocket の状態を更新
