@@ -18,6 +18,8 @@ var broadcast = make(chan Post)
 // WebSocket 更新用
 var upgrader = websocket.Upgrader{}
 
+var helpList, callList = NewIdList(), NewIdList()
+
 // クライアントからは JSON 形式で受け取る 
 type Post struct {
     // Message string `json:message`
