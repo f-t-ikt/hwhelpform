@@ -1,7 +1,6 @@
 package main
 
 import (
-    "container/list"
     "log"
     "net/http"
     "sync"
@@ -24,44 +23,6 @@ type Post struct {
     // Message string `json:message`
     Method string `json:Method`
     Id     int    `json:Id`
-}
-
-type IdList struct {
-    list *list.List
-}
-
-func NewIdList() *IdList {
-    return &IdList {
-        list: list.New(),
-    }
-}
-
-func (il *IdList) Add(v interface{}) *list.Element {
-    il.Lock()
-    defer il.Unlock()
-    retunr il.list.PushBack(v)
-}
-
-func (il *IdList) Remove(v interface{}) interface{} {
-    il.Lock()
-    defer il.Unlock()
-    for e := il.list.Front(); e != nil; e = e.Next() {
-        if e.Value == v {
-            return il.list.Remove(e)
-        }
-    }
-    return nil
-}
-
-func (il *IdList) Contains(v interface{}) bool {
-    il.Lock()
-    defer il.Unlock()
-    for e := il.list.Front(); e != nil; e = e.Next() {
-        if e.Value == v {
-            return true
-        }
-    }
-    return false
 }
 
 // クライアントのハンドラ
