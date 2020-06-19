@@ -39,7 +39,8 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
 
     // clients[websocket] = true
     clients.Store(websocket, true)
-
+    initialBroadcast(websocket)
+    
     for {
         var post Post
         // メッセージ読み込み
