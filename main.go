@@ -1,6 +1,7 @@
 package main
 
 import (
+    "container/list"
     "log"
     "net/http"
     "sync"
@@ -23,6 +24,16 @@ type Post struct {
     // Message string `json:message`
     Method string `json:Method`
     Id     int    `json:Id`
+}
+
+type IdList struct {
+    list *list.List
+}
+
+func NewIdList() *IdList {
+    return &IdList {
+        list: list.New(),
+    }
 }
 
 // クライアントのハンドラ
