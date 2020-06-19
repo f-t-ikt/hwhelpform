@@ -81,20 +81,38 @@ func main() {
 }
 
 func initialBroadcast(client *websocket.Conn) {
-    helpList.Each(func(v interface{}) {
+    helpList.Each(func(v interface{}) bool {
         post := Post {
             Method: "help",
             Id: v.(int),
         }
-        client.WriteJSON(post)
+        err := client.WriteJSON(post)
+        if err != nil {
+            log.Printf("error occurred while writing post to client: %v", err)
+            client.Close()
+            clients.Delete(client)
+            return false
+        }
+        return true
     })
     
-    callList.Each(func(v interface{}) {
+    if _, ok := clients.Load(client); !ok {
+        return
+    }
+    
+    callList.Each(func(v interface{}) bool {
         post := Post {
             Method: "call",
             Id: v.(int),
         }
-        client.WriteJSON(post)
+        err := client.WriteJSON(post)
+        if err != nil {
+            log.Printf("error occurred while writing post to client: %v", err)
+            client.Close()
+            clients.Delete(client)
+            return false
+        }
+        return true
     })
 }
 
