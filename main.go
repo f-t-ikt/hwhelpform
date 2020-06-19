@@ -52,7 +52,10 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
         }
         
        // メッセージを受け取る
-        broadcast <- post
+        // broadcast <- post
+        if post.Method == "help" {
+            procHelp(&post)
+        }
     }
 }
 
@@ -114,6 +117,25 @@ func initialBroadcast(client *websocket.Conn) {
         }
         return true
     })
+}
+
+func procHelp(post *Post) {
+    id := post.Id
+    if helpList.Contains(id) {
+        return
+    }
+    
+    if callList.Contains(id) {
+        callList.Remove(id)
+        del := Post {
+            Method: "deleteCall",
+            Id: id,
+        }
+        broadcast <- del
+    }
+    
+    helpList.Add(id)
+    broadcast <- *post
 }
 
 func broadcastPostsToClients() {
