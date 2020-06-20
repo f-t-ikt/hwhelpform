@@ -6,7 +6,9 @@
     </head>
     
     <body>
-        <p>教員用画面</p>
+        <div id="top">
+            <p>教員用画面</p>
+        </div>
         <div id="help">
             <p>質問待機中の部屋</p>
         </div>
@@ -41,6 +43,11 @@
             };
             
             function deletePost(id, field) {
+                if (socket.readyState > 1) {
+                    document.getElementById("top").innerHTML += "切断されました。リロードしてください。";
+                    return;
+                }
+                
                 socket.send(JSON.stringify(
                     {
                         Method: "delete" + field,
