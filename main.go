@@ -3,6 +3,7 @@ package main
 import (
     "log"
     "net/http"
+    "os"
     "sync"
 
     "github.com/gorilla/websocket"
@@ -66,9 +67,13 @@ func main() {
     http.HandleFunc("/update", HandleClients)
     go broadcastPostsToClients()
     
-    err := http.ListenAndServe(":8080", nil)
-    if err != nil {
-        log.Fatal("error starting http server::", err)
-        return
+    // err := http.ListenAndServe(":8080", nil)
+    // if err != nil {
+        // log.Fatal("error starting http server::", err)
+        // return
+    // }
+    server := http.Server {
+        Addr: ":" + os.Getenv("PORT"),
     }
+    server.ListenAndServe()
 }
