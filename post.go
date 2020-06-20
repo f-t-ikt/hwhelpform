@@ -6,7 +6,6 @@ import (
 )
 
 type Post struct {
-    // Message string `json:message`
     Method string `json:Method`
     Id     int    `json:Id`
 }
