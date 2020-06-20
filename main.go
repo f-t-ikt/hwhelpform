@@ -20,6 +20,7 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
     websocket, err := upgrader.Upgrade(w, r, nil)
     if err != nil {
         // log.Fatal("error upgrading GET request to a websocket::", err)
+        log.Printf("error upgrading GET request to a websocket: %v", err)
     }
     defer websocket.Close()
 
