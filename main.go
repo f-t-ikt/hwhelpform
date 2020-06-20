@@ -8,35 +8,26 @@ import (
     "github.com/gorilla/websocket"
 )
 
-// WebSocket サーバーにつなぎにいくクライアント
-// var clients = make(map[*websocket.Conn]bool)
 var clients sync.Map
 
-// クライアントから受け取るメッセージを格納
 var broadcast = make(chan Post)
 
-// WebSocket 更新用
 var upgrader = websocket.Upgrader{}
 
 var helpList, callList = NewIdList(), NewIdList()
 
-// クライアントのハンドラ
 func HandleClients(w http.ResponseWriter, r *http.Request) {
-    // websocket の状態を更新
     websocket, err := upgrader.Upgrade(w, r, nil)
     if err != nil {
         log.Fatal("error upgrading GET request to a websocket::", err)
     }
-    // websocket を閉じる
     defer websocket.Close()
 
-    // clients[websocket] = true
     clients.Store(websocket, true)
     initialBroadcast(websocket)
     
     for {
         var post Post
-        // メッセージ読み込み
         err := websocket.ReadJSON(&post)
         if err != nil {
             log.Printf("error occurred while reading post: %v", err)
@@ -45,8 +36,6 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
             break
         }
         
-       // メッセージを受け取る
-        // broadcast <- post
         if post.Method == "help" {
             procHelp(&post)
         } else if post.Method == "call" {
@@ -62,7 +51,6 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    // localhost:8080 でアクセスした時に index.html を読み込む
     http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
         http.ServeFile(w, r, "index.html")
     })
