@@ -19,7 +19,7 @@ var helpList, callList = NewIdList(), NewIdList()
 func HandleClients(w http.ResponseWriter, r *http.Request) {
     websocket, err := upgrader.Upgrade(w, r, nil)
     if err != nil {
-        log.Fatal("error upgrading GET request to a websocket::", err)
+        // log.Fatal("error upgrading GET request to a websocket::", err)
     }
     defer websocket.Close()
 
@@ -30,7 +30,7 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
         var post Post
         err := websocket.ReadJSON(&post)
         if err != nil {
-            log.Printf("error occurred while reading post: %v", err)
+            // log.Printf("error occurred while reading post: %v", err)
             clients.Delete(websocket)
             break
         }

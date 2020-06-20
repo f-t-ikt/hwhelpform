@@ -18,7 +18,7 @@ func initialBroadcast(client *websocket.Conn) {
         }
         err := client.WriteJSON(post)
         if err != nil {
-            log.Printf("error occurred while writing post to client: %v", err)
+            // log.Printf("error occurred while writing post to client: %v", err)
             client.Close()
             clients.Delete(client)
             return false
@@ -37,7 +37,7 @@ func initialBroadcast(client *websocket.Conn) {
         }
         err := client.WriteJSON(post)
         if err != nil {
-            log.Printf("error occurred while writing post to client: %v", err)
+            // log.Printf("error occurred while writing post to client: %v", err)
             client.Close()
             clients.Delete(client)
             return false
@@ -100,7 +100,7 @@ func broadcastPostsToClients() {
         clients.Range(func(client, stored interface{})bool {
             err := client.(*websocket.Conn).WriteJSON(post)
             if err != nil {
-                log.Printf("error occurred while writing post to client: %v", err)
+                // log.Printf("error occurred while writing post to client: %v", err)
                 client.(*websocket.Conn).Close()
                 clients.Delete(client)
             }
