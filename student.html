@@ -38,8 +38,8 @@
             var socket = new WebSocket("ws://" + window.location.host + "/update");
             
             socket.onopen = function() {
-                help.innerHTML += "LOAD<br>";
-                call.innerHTML += "LOAD<br>";
+                <!-- help.innerHTML += "LOAD<br>"; -->
+                <!-- call.innerHTML += "LOAD<br>"; -->
             };
             
             socket.onmessage = function(e) {
