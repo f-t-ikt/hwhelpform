@@ -31,7 +31,6 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
         err := websocket.ReadJSON(&post)
         if err != nil {
             log.Printf("error occurred while reading post: %v", err)
-            // delete(clients, websocket)
             clients.Delete(websocket)
             break
         }
