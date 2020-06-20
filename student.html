@@ -6,22 +6,24 @@
     </head>
     
     <body>
-        <p>学生用画面</p>
-        <select id="room">
-            <option value="">---</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-        </select>
-        <button onclick='send("help")'>質問する</button>
-        <button onclick='send("call")'>先生を呼ぶ</button>
+        <div id="selector">
+            <p>学生用画面</p>
+            <select id="room">
+                <option value="">---</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            <button onclick='send("help")'>質問する</button>
+            <button onclick='send("call")'>先生を呼ぶ</button>
+        </div>
         <div id="help">
             <p>質問待機中の部屋</p>
         </div>
@@ -57,6 +59,11 @@
             
             function send(method) {
                 if (room.value == "") return;
+                if (socket.readyState > 1) {
+                    document.getElementById("selector").innerHTML += "切断されました。リロードしてください。";
+                    return;
+                }
+                
                 socket.send(JSON.stringify(
                     {
                         Method: method,
