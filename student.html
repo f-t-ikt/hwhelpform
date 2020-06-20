@@ -6,8 +6,10 @@
     </head>
     
     <body>
-        <div id="selector">
+        <div id="top">
             <p>学生用画面</p>
+        </div>
+        <div id="selector">
             <select id="room">
                 <option value="">---</option>
                 <option value="1">1</option>
@@ -60,7 +62,7 @@
             function send(method) {
                 if (room.value == "") return;
                 if (socket.readyState > 1) {
-                    document.getElementById("selector").innerHTML += "切断されました。リロードしてください。";
+                    document.getElementById("top").innerHTML += "切断されました。リロードしてください。";
                     return;
                 }
                 
