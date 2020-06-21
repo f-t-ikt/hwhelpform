@@ -20,7 +20,7 @@
             var room = document.getElementById("room");
             var help = document.getElementById("help");
             var call = document.getElementById("call");
-            var socket = new WebSocket("wss://" + window.location.host + "/update");
+            var socket = new WebSocket("ws://" + window.location.host + "/update");
             
             socket.onopen = function() {
                 <!-- help.innerHTML += "LOAD<br>"; -->
