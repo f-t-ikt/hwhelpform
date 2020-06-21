@@ -3,17 +3,36 @@
     <head>
         <meta charset="utf-8">
         <title>教員用画面</title>
+        <style>
+            body {
+                text-align: center;
+                width: 100%;
+                margin: 0 auto;
+                font-size: 200%;
+            }
+            #help, #call {
+                margin: 0 auto;
+                table-layout: auto;
+            }
+            button {
+                font-size: 80%;
+            }
+        </style>
     </head>
     
     <body>
         <div id="top">
             <p>教員用画面</p>
         </div>
-        <div id="help">
-            <p>質問待機中の部屋</p>
+        <div>
+            <table id="help" border="1">
+                <tr><th colspan="2" bgcolor="#ffc0cb">質問待機中の部屋</th></tr>
+            </table>
         </div>
-        <div id="call">
-            <p>先生待機中の部屋</p>
+        <div>
+            <table id="call" border="1">
+                <tr><th colspan="2" bgcolor="#ffff00">先生待機中の部屋</th></tr>
+            </table>
         </div>
         
         <script>
@@ -30,21 +49,18 @@
             socket.onmessage = function(e) {
                 var post = JSON.parse(e.data);
                 if (post.Method == "help") {
-                    help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ",\"Help\")>確認</button>" + "<br>" + "</div>";
+                    addCol(help, post.Id, "Help");
                 } else if (post.Method == "call") {
-                    call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ",\"Call\")>確認</button>" + "<br>" + "</div>";
-                } else if (post.Method == "deleteHelp") {
+                    addCol(call, post.Id, "Call");
+                } else if (post.Method == "deleteHelp" || "deleteCall") {
                     var element = document.getElementById(post.Id);
-                    help.removeChild(element);
-                } else if (post.Method == "deleteCall") {
-                    var element = document.getElementById(post.Id);
-                    call.removeChild(element);
+                    deleteCol(element);
                 }
             };
             
             function deletePost(id, field) {
-                if (socket.readyState > 1) {
-                    document.getElementById("top").innerHTML += "切断されました。リロードしてください。";
+                if (socket.readyState > WebSocket.OPEN) {
+                    document.getElementById("top").innerHTML += "<div style=\"color: red;\">切断されました。リロードしてください。</div>";
                     return;
                 }
                 
@@ -54,6 +70,23 @@
                         Id: id
                     }
                 ));
+            };
+            
+            function addCol(table, id, field) {
+                var row = table.insertRow(-1);
+                row.id = id;
+                var cell1 = row.insertCell(-1);
+                var cell2 = row.insertCell(-1);
+                cell1.innerHTML = id;
+                var button = document.createElement("button");
+                button.onclick = function(){deletePost(id, field)};
+                button.innerHTML = "確認"
+                cell2.appendChild(button);
+            };
+            
+            function deleteCol(obj) {
+                var table = obj.parentNode;
+                table.deleteRow(obj.sectionRowIndex);
             };
         </script>
     </body>

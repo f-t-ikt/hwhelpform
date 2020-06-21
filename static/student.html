@@ -3,6 +3,21 @@
     <head>
         <meta charset="utf-8">
         <title>学生用画面</title>
+        <style>
+            body {
+                text-align: center;
+                width: 100%;
+                margin: 0 auto;
+                font-size: 200%;
+            }
+            #room, #helpBtn, #callBtn {
+                font-size: 80%;
+            }
+            #help, #call {
+                margin: 0 auto;
+                table-layout: auto;
+            }
+        </style>
     </head>
     
     <body>
@@ -23,14 +38,18 @@
                 <option value="9">9</option>
                 <option value="10">10</option>
             </select>
-            <button onclick='send("help")'>質問する</button>
-            <button onclick='send("call")'>先生を呼ぶ</button>
+            <button id="helpBtn" onclick='send("help")'>質問する</button>
+            <button id="callBtn" onclick='send("call")'>先生を呼ぶ</button>
         </div>
-        <div id="help">
-            <p>質問待機中の部屋</p>
+        <div>
+            <table id="help" border="1">
+                <tr><th bgcolor="#ffc0cb">質問待機中の部屋</th></tr>
+            </table>
         </div>
-        <div id="call">
-            <p>先生待機中の部屋</p>
+        <div>
+            <table id="call" border="1">
+                <tr><th bgcolor="#ffff00">先生待機中の部屋</th></tr>
+            </table>
         </div>
         
         <script>
@@ -47,22 +66,19 @@
             socket.onmessage = function(e) {
                 var post = JSON.parse(e.data);
                 if (post.Method == "help") {
-                    help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<br>" + "</div>";
+                    addCol(help, post.Id);
                 } else if (post.Method == "call") {
-                    call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<br>" + "</div>";
-                } else if (post.Method == "deleteHelp") {
+                    addCol(call, post.Id);
+                } else if (post.Method == "deleteHelp" || post.Method == "deleteCall") {
                     var element = document.getElementById(post.Id);
-                    help.removeChild(element);
-                } else if (post.Method == "deleteCall") {
-                    var element = document.getElementById(post.Id);
-                    call.removeChild(element);
+                    deleteCol(element);
                 }
             };
             
             function send(method) {
                 if (room.value == "") return;
-                if (socket.readyState > 1) {
-                    document.getElementById("top").innerHTML += "切断されました。リロードしてください。";
+                if (socket.readyState > WebSocket.OPEN) {
+                    document.getElementById("top").innerHTML += "<div style=\"color: red;\">切断されました。リロードしてください。</div>";
                     return;
                 }
                 
@@ -72,6 +88,18 @@
                         Id: Number(room.value)
                     }
                 ));
+            };
+            
+            function addCol(table, id) {
+                var row = table.insertRow(-1);
+                row.id = id;
+                var cell = row.insertCell(-1);
+                cell.innerHTML = id;
+            };
+            
+            function deleteCol(obj) {
+                var table = obj.parentNode;
+                table.deleteRow(obj.sectionRowIndex);
             };
         </script>
     </body>
