@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>学生用画面</title>
+    </head>
+    
+    <body>
+        <div id="top">
+            <p>学生用画面</p>
+        </div>
+        <div id="selector">
+            <select id="room">
+                <option value="">---</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            <button onclick='send("help")'>質問する</button>
+            <button onclick='send("call")'>先生を呼ぶ</button>
+        </div>
+        <div id="help">
+            <p>質問待機中の部屋</p>
+        </div>
+        <div id="call">
+            <p>先生待機中の部屋</p>
+        </div>
+        
+        <script>
+            var room = document.getElementById("room");
+            var help = document.getElementById("help");
+            var call = document.getElementById("call");
+            var socket = new WebSocket("wss://" + window.location.host + "/update");
+            
+            socket.onopen = function() {
+                <!-- help.innerHTML += "LOAD<br>"; -->
+                <!-- call.innerHTML += "LOAD<br>"; -->
+            };
+            
+            socket.onmessage = function(e) {
+                var post = JSON.parse(e.data);
+                if (post.Method == "help") {
+                    help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<br>" + "</div>";
+                } else if (post.Method == "call") {
+                    call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<br>" + "</div>";
+                } else if (post.Method == "deleteHelp") {
+                    var element = document.getElementById(post.Id);
+                    help.removeChild(element);
+                } else if (post.Method == "deleteCall") {
+                    var element = document.getElementById(post.Id);
+                    call.removeChild(element);
+                }
+            };
+            
+            function send(method) {
+                if (room.value == "") return;
+                if (socket.readyState > 1) {
+                    document.getElementById("top").innerHTML += "切断されました。リロードしてください。";
+                    return;
+                }
+                
+                socket.send(JSON.stringify(
+                    {
+                        Method: method,
+                        Id: Number(room.value)
+                    }
+                ));
+            };
+        </script>
+    </body>
+</html>

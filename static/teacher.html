@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>教員用画面</title>
+    </head>
+    
+    <body>
+        <div id="top">
+            <p>教員用画面</p>
+        </div>
+        <div id="help">
+            <p>質問待機中の部屋</p>
+        </div>
+        <div id="call">
+            <p>先生待機中の部屋</p>
+        </div>
+        
+        <script>
+            var room = document.getElementById("room");
+            var help = document.getElementById("help");
+            var call = document.getElementById("call");
+            var socket = new WebSocket("wss://" + window.location.host + "/update");
+            
+            socket.onopen = function() {
+                <!-- help.innerHTML += "LOAD<br>"; -->
+                <!-- call.innerHTML += "LOAD<br>"; -->
+            };
+            
+            socket.onmessage = function(e) {
+                var post = JSON.parse(e.data);
+                if (post.Method == "help") {
+                    help.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ",\"Help\")>確認</button>" + "<br>" + "</div>";
+                } else if (post.Method == "call") {
+                    call.innerHTML += "<div id=" + post.Id + ">" + post.Id + "<button onclick=deletePost(" + post.Id + ",\"Call\")>確認</button>" + "<br>" + "</div>";
+                } else if (post.Method == "deleteHelp") {
+                    var element = document.getElementById(post.Id);
+                    help.removeChild(element);
+                } else if (post.Method == "deleteCall") {
+                    var element = document.getElementById(post.Id);
+                    call.removeChild(element);
+                }
+            };
+            
+            function deletePost(id, field) {
+                if (socket.readyState > 1) {
+                    document.getElementById("top").innerHTML += "切断されました。リロードしてください。";
+                    return;
+                }
+                
+                socket.send(JSON.stringify(
+                    {
+                        Method: "delete" + field,
+                        Id: id
+                    }
+                ));
+            };
+        </script>
+    </body>
+</html>
