@@ -52,26 +52,11 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        http.ServeFile(w, r, "index.html")
-    })
-    
-    http.HandleFunc("/teacher", func(w http.ResponseWriter, r *http.Request) {
-        http.ServeFile(w, r, "teacher.html")
-    })
-    
-    http.HandleFunc("/student", func(w http.ResponseWriter, r *http.Request) {
-        http.ServeFile(w, r, "student.html")
-    })
+    http.Handle("/", http.FileServer(http.Dir("./static")))
     
     http.HandleFunc("/update", HandleClients)
     go broadcastPostsToClients()
     
-    // err := http.ListenAndServe(":8080", nil)
-    // if err != nil {
-        // log.Fatal("error starting http server::", err)
-        // return
-    // }
     server := http.Server {
         Addr: ":" + os.Getenv("PORT"),
     }
