@@ -1,7 +1,7 @@
 var room = document.getElementById("room");
 var help = document.getElementById("help");
 var call = document.getElementById("call");
-var socket = new ReconnectingWebSocket("ws://" + window.location.host + "/update");
+var socket = new ReconnectingWebSocket("wss://" + window.location.host + "/update");
 
 socket.onopen = function() {
     <!-- help.innerHTML += "LOAD<br>"; -->
