@@ -4,8 +4,7 @@ var call = document.getElementById("call");
 var socket = new ReconnectingWebSocket("wss://" + window.location.host + "/update");
 
 socket.onopen = function() {
-    <!-- help.innerHTML += "LOAD<br>"; -->
-    <!-- call.innerHTML += "LOAD<br>"; -->
+    init();
 };
 
 socket.onmessage = function(e) {
@@ -19,6 +18,15 @@ socket.onmessage = function(e) {
         deleteCol(element);
     }
 };
+
+function init() {
+    while (help.rows[1]) {
+        help.deleteRow(1);
+    }
+    while (call.rows[1]) {
+        call.deleteRow(1);
+    }
+}
 
 function send(method) {
     if (room.value == "") return;
