@@ -51,6 +51,22 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
     }
 }
 
+func handleIndex(name string, data subject) func(http.ResponseWriter, *http.Request) {
+    return func(w http.ResponseWriter, r *http.Request) {
+        if err := templates[name].Execute(w, data); err != nil {
+            log.Printf("failed to execute template: %v", err)
+        }
+    }
+}
+
+func loadTemplate(name string) *template.Template {
+	t, err := template.ParseFiles("templates/" + name + ".html")
+	if err != nil {
+		log.Fatalf("template error: %v", err)
+	}
+	return t
+}
+
 func main() {
     http.Handle("/", http.FileServer(http.Dir("./static")))
     
