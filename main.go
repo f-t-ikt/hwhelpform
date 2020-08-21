@@ -51,7 +51,14 @@ func HandleClients(w http.ResponseWriter, r *http.Request) {
     }
 }
 
-func handleIndex(name string, data subject) func(http.ResponseWriter, *http.Request) {
+type subject struct {
+    Id   string
+    Name string
+}
+
+var templates = make(map[string]*template.Template)
+
+func handleTemplates(name string, data subject) func(http.ResponseWriter, *http.Request) {
     return func(w http.ResponseWriter, r *http.Request) {
         if err := templates[name].Execute(w, data); err != nil {
             log.Printf("failed to execute template: %v", err)
@@ -68,7 +75,24 @@ func loadTemplate(name string) *template.Template {
 }
 
 func main() {
-    http.Handle("/", http.FileServer(http.Dir("./static")))
+    templates["index"] = loadTemplate("_index")
+    templates["student"] = loadTemplate("student")
+    templates["teacher"] = loadTemplate("teacher")
+    
+    digital := subject {"digital", "Digital"}
+    mpu := subject {"mpu", "MPU"}
+    psoc := subject {"psoc", "PSoC"}
+
+    http.Handle("/", http.FileServer(http.Dir("./templates")))
+    http.HandleFunc("/digital", handleIndex("index", digital))
+    http.HandleFunc("/mpu", handleIndex("index", mpu))
+    http.HandleFunc("/psoc", handleIndex("index", psoc))
+    http.HandleFunc("/digital/student", handleIndex("student", digital))
+    http.HandleFunc("/mpu/student", handleIndex("student", mpu))
+    http.HandleFunc("/psoc/student", handleIndex("student", psoc))
+    http.HandleFunc("/digital/teacher", handleIndex("teacher", digital))
+    http.HandleFunc("/mpu/teacher", handleIndex("teacher", mpu))
+    http.HandleFunc("/psoc/teacher", handleIndex("teacher", psoc))
     
     http.HandleFunc("/update", HandleClients)
     go broadcastPostsToClients()
