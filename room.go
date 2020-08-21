@@ -1,27 +1,33 @@
 package main
 
 import (
+    "log"
     "net/http"
     "sync"
     
     "github.com/gorilla/websocket"
 )
 
-struct room {
+type Post struct {
+    Method string `json:Method`
+    Id     int    `json:Id`
+}
+
+type room struct {
     broadcast chan Post
     clients sync.Map
     upgrader websocket.Upgrader
-    helpList IdList
-    callList IdList
+    helpList *IdList
+    callList *IdList
 }
 
 func newRoom() *room {
     return &room {
-        broadcast: make(chan Post)
-        clients: sycn.Map{}
-        upgrader: websocket.Upgrader{}
-        helpList: NewIdList()
-        callList: NewIdList()
+        broadcast: make(chan Post),
+        clients: sync.Map{},
+        upgrader: websocket.Upgrader{},
+        helpList: NewIdList(),
+        callList: NewIdList(),
     }
 }
 
@@ -33,7 +39,7 @@ func (r *room) initialBroadcast(client *websocket.Conn) {
         }
         err := client.WriteJSON(post)
         if err != nil {
-            // log.Printf("error occurred while writing post to client: %v", err)
+            log.Printf("error occurred while writing post to client: %v", err)
             client.Close()
             r.clients.Delete(client)
             return false
@@ -52,7 +58,7 @@ func (r *room) initialBroadcast(client *websocket.Conn) {
         }
         err := client.WriteJSON(post)
         if err != nil {
-            // log.Printf("error occurred while writing post to client: %v", err)
+            log.Printf("error occurred while writing post to client: %v", err)
             client.Close()
             r.clients.Delete(client)
             return false
@@ -115,7 +121,7 @@ func (r *room) broadcastPostsToClients() {
         r.clients.Range(func(client, stored interface{})bool {
             err := client.(*websocket.Conn).WriteJSON(post)
             if err != nil {
-                // log.Printf("error occurred while writing post to client: %v", err)
+                log.Printf("error occurred while writing post to client: %v", err)
                 client.(*websocket.Conn).Close()
                 r.clients.Delete(client)
             }
@@ -124,10 +130,10 @@ func (r *room) broadcastPostsToClients() {
     }
 }
 
-func (r *room) HandleHTTP(w http.ResponseWriter, req *http.Request) {
-    websocket, err := r.upgrader.Upgrade(w, r, nil)
+func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
+    websocket, err := r.upgrader.Upgrade(w, req, nil)
     if err != nil {
-        // log.Fatal("error upgrading GET request to a websocket::", err)
+        log.Fatal("error upgrading GET request to a websocket::", err)
         log.Printf("error upgrading GET request to a websocket: %v", err)
     }
     defer websocket.Close()
@@ -139,7 +145,7 @@ func (r *room) HandleHTTP(w http.ResponseWriter, req *http.Request) {
         var post Post
         err := websocket.ReadJSON(&post)
         if err != nil {
-            // log.Printf("error occurred while reading post: %v", err)
+            log.Printf("error occurred while reading post: %v", err)
             r.clients.Delete(websocket)
             break
         }

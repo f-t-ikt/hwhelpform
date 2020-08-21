@@ -1,55 +1,11 @@
 package main
 
 import (
+    "html/template"
     "log"
     "net/http"
     "os"
-    "sync"
-
-    "github.com/gorilla/websocket"
 )
-
-var clients sync.Map
-
-var broadcast = make(chan Post)
-
-var upgrader = websocket.Upgrader{}
-
-var helpList, callList = NewIdList(), NewIdList()
-
-func HandleClients(w http.ResponseWriter, r *http.Request) {
-    websocket, err := upgrader.Upgrade(w, r, nil)
-    if err != nil {
-        // log.Fatal("error upgrading GET request to a websocket::", err)
-        log.Printf("error upgrading GET request to a websocket: %v", err)
-    }
-    defer websocket.Close()
-
-    clients.Store(websocket, true)
-    initialBroadcast(websocket)
-    
-    for {
-        var post Post
-        err := websocket.ReadJSON(&post)
-        if err != nil {
-            // log.Printf("error occurred while reading post: %v", err)
-            clients.Delete(websocket)
-            break
-        }
-        
-        if post.Method == "help" {
-            procHelp(&post)
-        } else if post.Method == "call" {
-            procCall(&post)
-        } else if post.Method == "deleteHelp" {
-            procDeleteHelp(&post)
-        } else if post.Method == "deleteCall" {
-            procDeleteCall(&post)
-        } else {
-            log.Printf("unknown post: %v", post)
-        }
-    }
-}
 
 type subject struct {
     Id   string
@@ -84,18 +40,26 @@ func main() {
     psoc := subject {"psoc", "PSoC"}
 
     http.Handle("/", http.FileServer(http.Dir("./templates")))
-    http.HandleFunc("/digital", handleIndex("index", digital))
-    http.HandleFunc("/mpu", handleIndex("index", mpu))
-    http.HandleFunc("/psoc", handleIndex("index", psoc))
-    http.HandleFunc("/digital/student", handleIndex("student", digital))
-    http.HandleFunc("/mpu/student", handleIndex("student", mpu))
-    http.HandleFunc("/psoc/student", handleIndex("student", psoc))
-    http.HandleFunc("/digital/teacher", handleIndex("teacher", digital))
-    http.HandleFunc("/mpu/teacher", handleIndex("teacher", mpu))
-    http.HandleFunc("/psoc/teacher", handleIndex("teacher", psoc))
+    http.Handle("/resources/", http.StripPrefix("/resources/",http.FileServer(http.Dir("./resources"))))
+    http.HandleFunc("/digital", handleTemplates("index", digital))
+    http.HandleFunc("/mpu", handleTemplates("index", mpu))
+    http.HandleFunc("/psoc", handleTemplates("index", psoc))
+    http.HandleFunc("/digital/student", handleTemplates("student", digital))
+    http.HandleFunc("/mpu/student", handleTemplates("student", mpu))
+    http.HandleFunc("/psoc/student", handleTemplates("student", psoc))
+    http.HandleFunc("/digital/teacher", handleTemplates("teacher", digital))
+    http.HandleFunc("/mpu/teacher", handleTemplates("teacher", mpu))
+    http.HandleFunc("/psoc/teacher", handleTemplates("teacher", psoc))
     
-    http.HandleFunc("/update", HandleClients)
-    go broadcastPostsToClients()
+    digitalRoom := newRoom()
+    mpuRoom := newRoom()
+    psocRoom := newRoom()
+    http.Handle("/digital/update", digitalRoom)
+    http.Handle("/mpu/update", mpuRoom)
+    http.Handle("/psoc/update", psocRoom)
+    go digitalRoom.broadcastPostsToClients()
+    go mpuRoom.broadcastPostsToClients()
+    go psocRoom.broadcastPostsToClients()
     
     server := http.Server {
         Addr: ":" + os.Getenv("PORT"),
