@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>学生用画面</title>
+        <style>
+            body {
+                text-align: center;
+                width: 100%;
+                margin: 0 auto;
+                font-size: 200%;
+            }
+            #room, #helpBtn, #callBtn {
+                font-size: 80%;
+            }
+            #help, #call {
+                margin: 0 auto;
+                table-layout: auto;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div id="top">
+            <p>学生用画面</p>
+        </div>
+        <div id="selector">
+            <select id="room">
+                <option value="">---</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+            </select>
+            <button id="helpBtn" onclick='send("help")'>質問する</button>
+            <button id="callBtn" onclick='send("call")'>先生を呼ぶ</button>
+        </div>
+        <div>
+            <table id="help" border="1">
+                <tr><th bgcolor="#ffc0cb">質問待機中の部屋</th></tr>
+            </table>
+        </div>
+        <div>
+            <table id="call" border="1">
+                <tr><th bgcolor="#ffff00">先生待機中の部屋</th></tr>
+            </table>
+        </div>
+        
+        <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+        <script type="text/javascript">
+            var socket = new ReconnectingWebSocket("wss://" + window.location.host + "/{{ .Id }}/update");
+        </script>
+        <script type="text/javascript" src="js/student.js"></script>
+    </body>
+</html>

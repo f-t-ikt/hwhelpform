@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>教員用画面</title>
+        <style>
+            body {
+                text-align: center;
+                width: 100%;
+                margin: 0 auto;
+                font-size: 200%;
+            }
+            #help, #call {
+                margin: 0 auto;
+                table-layout: auto;
+            }
+            button {
+                font-size: 80%;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div id="top">
+            <p>教員用画面</p>
+        </div>
+        <div>
+            <table id="help" border="1">
+                <tr><th colspan="2" bgcolor="#ffc0cb">質問待機中の部屋</th></tr>
+            </table>
+        </div>
+        <div>
+            <table id="call" border="1">
+                <tr><th colspan="2" bgcolor="#ffff00">先生待機中の部屋</th></tr>
+            </table>
+        </div>
+        
+        <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+        <script type="text/javascript">
+            var socket = new ReconnectingWebSocket("wss://" + window.location.host + "/{{ .Id }}/update");
+        </script>
+        <script type="text/javascript" src="js/teacher.js"></script>
+    </body>
+</html>

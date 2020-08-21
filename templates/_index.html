@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>挙手システム</title>
+        <style>
+            body {
+                text-align: center;
+                font-size: 26px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div>
+            <h1>{{ .Name }}</h1>
+            <a href="/{{ .Id }}/student">学生用画面</a>
+            <a href="/{{ .Id }}/teacher">教員用画面</a>
+        </div>
+    </body>
+</html>
