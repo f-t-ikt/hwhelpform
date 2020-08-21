@@ -52,10 +52,10 @@
             </table>
         </div>
         
-        <script type="text/javascript" src="js/reconnecting-websocket.min.js"></script>
+        <script type="text/javascript" src="../resources/js/reconnecting-websocket.min.js"></script>
         <script type="text/javascript">
-            var socket = new ReconnectingWebSocket("wss://" + window.location.host + "/{{ .Id }}/update");
+            var socket = new ReconnectingWebSocket("ws://" + window.location.host + "/{{ .Id }}/update");
         </script>
-        <script type="text/javascript" src="js/student.js"></script>
+        <script type="text/javascript" src="../resources/js/student.js"></script>
     </body>
 </html>
