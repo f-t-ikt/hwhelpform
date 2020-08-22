@@ -9,9 +9,9 @@ socket.onopen = function() {
 socket.onmessage = function(e) {
     var post = JSON.parse(e.data);
     if (post.Method == "help") {
-        addCol(help, post.Id, "Help");
+        addCol(help, post.Id, post.Date, "Help");
     } else if (post.Method == "call") {
-        addCol(call, post.Id, "Call");
+        addCol(call, post.Id, post.Date, "Call");
     } else if (post.Method == "deleteHelp" || "deleteCall") {
         var element = document.getElementById(post.Id);
         deleteCol(element);
@@ -41,16 +41,21 @@ function deletePost(id, field) {
     ));
 };
 
-function addCol(table, id, field) {
+function addCol(table, id, date, field) {
     var row = table.insertRow(-1);
     row.id = id;
-    var cell1 = row.insertCell(-1);
-    var cell2 = row.insertCell(-1);
-    cell1.innerHTML = id;
+    var idCell = row.insertCell(-1);
+    var timeCell = row.insertCell(-1);
+    var buttonCell = row.insertCell(-1);
+    idCell.innerHTML = id;
+    var time = document.createElement("div");
+    time.datetime = date;
+    time.innerHTML = date;
+    timeCell.appendChild(time);
     var button = document.createElement("button");
     button.onclick = function(){deletePost(id, field)};
     button.innerHTML = "確認"
-    cell2.appendChild(button);
+    buttonCell.appendChild(button);
 };
 
 function deleteCol(obj) {
