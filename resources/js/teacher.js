@@ -2,6 +2,10 @@ var room = document.getElementById("room");
 var help = document.getElementById("help");
 var call = document.getElementById("call");
 
+var timeago = new timeago();
+timeago.setLocale("ja");
+// timeago.render(document.querySelectorAll(".need_to_be_rendered"))
+
 socket.onopen = function() {
     init();
 };
@@ -49,13 +53,15 @@ function addCol(table, id, date, field) {
     var buttonCell = row.insertCell(-1);
     idCell.innerHTML = id;
     var time = document.createElement("div");
-    time.datetime = date;
+    time.className = "need_to_be_rendered";
+    time.setAttribute("datetime", date);
     time.innerHTML = date;
     timeCell.appendChild(time);
     var button = document.createElement("button");
     button.onclick = function(){deletePost(id, field)};
     button.innerHTML = "確認"
     buttonCell.appendChild(button);
+    timeago.render(time)
 };
 
 function deleteCol(obj) {
