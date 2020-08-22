@@ -33,10 +33,7 @@ func newRoom() *room {
 
 func (r *room) initialBroadcast(client *websocket.Conn) {
     r.helpList.Each(func(v interface{}) bool {
-        post := Post {
-            Method: "help",
-            Id: v.(int),
-        }
+        post := v.(*Post)
         err := client.WriteJSON(post)
         if err != nil {
             log.Printf("error occurred while writing post to client: %v", err)
@@ -52,10 +49,7 @@ func (r *room) initialBroadcast(client *websocket.Conn) {
     }
     
     r.callList.Each(func(v interface{}) bool {
-        post := Post {
-            Method: "call",
-            Id: v.(int),
-        }
+        post := v.(*Post)
         err := client.WriteJSON(post)
         if err != nil {
             log.Printf("error occurred while writing post to client: %v", err)
@@ -69,12 +63,12 @@ func (r *room) initialBroadcast(client *websocket.Conn) {
 
 func (r *room) procHelp(post *Post) {
     id := post.Id
-    if r.helpList.Contains(id) {
+    if r.helpList.ContainsId(post) {
         return
     }
     
-    if r.callList.Contains(id) {
-        r.callList.Remove(id)
+    if r.callList.ContainsId(post) {
+        r.callList.RemoveById(post)
         del := Post {
             Method: "deleteCall",
             Id: id,
@@ -82,18 +76,18 @@ func (r *room) procHelp(post *Post) {
         r.broadcast <- del
     }
     
-    r.helpList.Add(id)
+    r.helpList.Add(post)
     r.broadcast <- *post
 }
 
 func (r *room) procCall(post *Post) {
     id := post.Id
-    if r.callList.Contains(id) {
+    if r.callList.ContainsId(post) {
         return
     }
     
-    if r.helpList.Contains(id) {
-        r.helpList.Remove(id)
+    if r.helpList.ContainsId(post) {
+        r.helpList.RemoveById(post)
         del := Post {
             Method: "deleteHelp",
             Id: id,
@@ -101,17 +95,17 @@ func (r *room) procCall(post *Post) {
         r.broadcast <- del
     }
     
-    r.callList.Add(id)
+    r.callList.Add(post)
     r.broadcast <- *post
 }
 
 func (r *room) procDeleteHelp(post *Post) {
-    r.helpList.Remove(post.Id)
+    r.helpList.RemoveById(post)
     r.broadcast <- *post
 }
 
 func (r *room) procDeleteCall(post *Post) {
-    r.callList.Remove(post.Id)
+    r.callList.RemoveById(post)
     r.broadcast <- *post
 }
 
