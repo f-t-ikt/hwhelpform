@@ -11,6 +11,7 @@ import (
 type Post struct {
     Method string `json:Method`
     Id     int    `json:Id`
+    Date   string `json:Date`
 }
 
 type room struct {
