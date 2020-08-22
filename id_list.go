@@ -57,10 +57,21 @@ func (il *IdList) Each(f func(v interface{}) bool) {
 func (il *IdList) ContainsId(v interface{}) bool {
     il.Lock()
     defer il.Unlock()
-    for r := il.list.Front(); e != nil; e = e.Next() {
-        if e.(*Post).Id == v.(*Post).Id {
+    for e := il.list.Front(); e != nil; e = e.Next() {
+        if e.Value.(*Post).Id == v.(*Post).Id {
             return true
         }
     }
     return false
+}
+
+func (il *IdList) RemoveById(v interface{}) bool {
+    il.Lock()
+    defer il.Unlock()
+    for e := il.list.Front(); e != nil; e = e.Next() {
+        if e.Value.(*Post).Id == v.(*Post).Id {
+            return il.list.Remove(e)
+        }
+    }
+    return nil
 }
