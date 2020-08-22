@@ -51,7 +51,6 @@ function addCol(table, id, date, field) {
     var buttonCell = row.insertCell(-1);
     idCell.innerHTML = id;
     var time = document.createElement("div");
-    time.className = "need_to_be_rendered";
     time.setAttribute("datetime", date);
     time.innerHTML = date;
     timeCell.appendChild(time);
