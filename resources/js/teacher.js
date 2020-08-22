@@ -1,10 +1,8 @@
-var room = document.getElementById("room");
 var help = document.getElementById("help");
 var call = document.getElementById("call");
 
 var timeago = new timeago();
 timeago.setLocale("ja");
-// timeago.render(document.querySelectorAll(".need_to_be_rendered"))
 
 socket.onopen = function() {
     init();
