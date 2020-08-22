@@ -46,7 +46,7 @@ function send(method) {
     socket.send(JSON.stringify(
         {
             Method: method,
-            Id: Number(room.value)
+            Id: Number(room.value),
             Date: iso8601(new Date())
         }
     ));
