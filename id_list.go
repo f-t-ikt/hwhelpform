@@ -65,7 +65,7 @@ func (il *IdList) ContainsId(v interface{}) bool {
     return false
 }
 
-func (il *IdList) RemoveById(v interface{}) bool {
+func (il *IdList) RemoveById(v interface{}) interface{} {
     il.Lock()
     defer il.Unlock()
     for e := il.list.Front(); e != nil; e = e.Next() {
