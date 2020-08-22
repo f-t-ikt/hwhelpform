@@ -27,6 +27,15 @@ function init() {
     }
 }
 
+function iso8601(date) {
+  return date.getUTCFullYear()
+    + "-" + (date.getUTCMonth()+1)
+    + "-" + date.getUTCDate()
+    + "T" + date.getUTCHours()
+    + ":" + date.getUTCMinutes()
+    + ":" + date.getUTCSeconds() + "Z";
+}
+
 function send(method) {
     if (room.value == "") return;
     if (socket.readyState > WebSocket.OPEN) {
@@ -38,6 +47,7 @@ function send(method) {
         {
             Method: method,
             Id: Number(room.value)
+            Date: iso8601(new Date())
         }
     ));
 };
