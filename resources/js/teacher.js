@@ -49,15 +49,22 @@ function addCol(table, id, date, field) {
     var idCell = row.insertCell(-1);
     var timeCell = row.insertCell(-1);
     var buttonCell = row.insertCell(-1);
+    
+    idCell.className = "id";
     idCell.innerHTML = id;
+    
     var time = document.createElement("div");
     time.setAttribute("datetime", date);
     time.innerHTML = date;
+    timeCell.className = "time";
     timeCell.appendChild(time);
+    
     var button = document.createElement("button");
     button.onclick = function(){deletePost(id, field)};
     button.innerHTML = "確認"
+    buttonCell.className = "button";
     buttonCell.appendChild(button);
+    
     timeago.render(time)
 };
 
