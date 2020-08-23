@@ -13,10 +13,9 @@
     
     <body>
         <div>
-            <h1>ハードウェア実習 挙手システム</h1>
-            <a href="/digital">Digital</a>
-            <a href="/mpu">MPU</a>
-            <a href="/psoc">PSoC</a>
+            <h1>{{ .Name }}</h1>
+            <a href="/{{ .Id }}/student">学生用画面</a>
+            <a href="/{{ .Id }}/teacher">教員用画面</a>
         </div>
     </body>
 </html>
