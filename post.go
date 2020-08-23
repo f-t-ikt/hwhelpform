@@ -1,32 +1,16 @@
 package main
 
 import (
-    "log"
-    "net/http"
-    "sync"
-    
     "github.com/gorilla/websocket"
 )
 
-type room struct {
-    broadcast chan Post
-    clients sync.Map
-    upgrader websocket.Upgrader
-    helpList *IdList
-    callList *IdList
+type Post struct {
+    Method string `json:Method`
+    Id     int    `json:Id`
+    Date   string `json:Date`
 }
 
-func newRoom() *room {
-    return &room {
-        broadcast: make(chan Post),
-        clients: sync.Map{},
-        upgrader: websocket.Upgrader{},
-        helpList: NewIdList(),
-        callList: NewIdList(),
-    }
-}
-
-func (r *room) initialBroadcast(client *websocket.Conn) {
+func initialBroadcast(r *room, client *websocket.Conn) {
     r.helpList.Each(func(v interface{}) bool {
         post := v.(*Post)
         err := client.WriteJSON(post)
@@ -56,7 +40,7 @@ func (r *room) initialBroadcast(client *websocket.Conn) {
     })
 }
 
-func (r *room) procHelp(post *Post) {
+func procHelp(r *room, post *Post) {
     id := post.Id
     if r.helpList.ContainsId(post) {
         return
@@ -75,7 +59,7 @@ func (r *room) procHelp(post *Post) {
     r.broadcast <- *post
 }
 
-func (r *room) procCall(post *Post) {
+func procCall(r *room, post *Post) {
     id := post.Id
     if r.callList.ContainsId(post) {
         return
@@ -94,17 +78,17 @@ func (r *room) procCall(post *Post) {
     r.broadcast <- *post
 }
 
-func (r *room) procDeleteHelp(post *Post) {
+func procDeleteHelp(r *room, post *Post) {
     r.helpList.RemoveById(post)
     r.broadcast <- *post
 }
 
-func (r *room) procDeleteCall(post *Post) {
+func procDeleteCall(r *room, post *Post) {
     r.callList.RemoveById(post)
     r.broadcast <- *post
 }
 
-func (r *room) broadcastPostsToClients() {
+func broadcastPostsToClients(r *room) {
     for {
         post := <- r.broadcast
         r.clients.Range(func(client, stored interface{})bool {
@@ -116,39 +100,5 @@ func (r *room) broadcastPostsToClients() {
             }
             return true
         })
-    }
-}
-
-func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-    websocket, err := r.upgrader.Upgrade(w, req, nil)
-    if err != nil {
-        log.Fatal("error upgrading GET request to a websocket::", err)
-        log.Printf("error upgrading GET request to a websocket: %v", err)
-    }
-    defer websocket.Close()
-
-    r.clients.Store(websocket, true)
-    r.initialBroadcast(websocket)
-    
-    for {
-        var post Post
-        err := websocket.ReadJSON(&post)
-        if err != nil {
-            log.Printf("error occurred while reading post: %v", err)
-            r.clients.Delete(websocket)
-            break
-        }
-        
-        if post.Method == "help" {
-            r.procHelp(&post)
-        } else if post.Method == "call" {
-            r.procCall(&post)
-        } else if post.Method == "deleteHelp" {
-            r.procDeleteHelp(&post)
-        } else if post.Method == "deleteCall" {
-            r.procDeleteCall(&post)
-        } else {
-            log.Printf("unknown post: %v", post)
-        }
     }
 }
