@@ -128,7 +128,7 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
     defer websocket.Close()
 
     r.clients.Store(websocket, true)
-    r.initialBroadcast(websocket)
+    initialBroadcast(r, websocket)
     
     for {
         var post Post
@@ -140,13 +140,13 @@ func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
         }
         
         if post.Method == "help" {
-            r.procHelp(&post)
+            procHelp(r, &post)
         } else if post.Method == "call" {
-            r.procCall(&post)
+            procCall(r, &post)
         } else if post.Method == "deleteHelp" {
-            r.procDeleteHelp(&post)
+            procDeleteHelp(r, &post)
         } else if post.Method == "deleteCall" {
-            r.procDeleteCall(&post)
+            procDeleteCall(r, &post)
         } else {
             log.Printf("unknown post: %v", post)
         }

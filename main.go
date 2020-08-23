@@ -57,9 +57,12 @@ func main() {
     http.Handle("/digital/update", digitalRoom)
     http.Handle("/mpu/update", mpuRoom)
     http.Handle("/psoc/update", psocRoom)
-    go digitalRoom.broadcastPostsToClients()
-    go mpuRoom.broadcastPostsToClients()
-    go psocRoom.broadcastPostsToClients()
+    // go digitalRoom.broadcastPostsToClients()
+    // go mpuRoom.broadcastPostsToClients()
+    // go psocRoom.broadcastPostsToClients()
+    go broadcastPostsToClients(digitalRoom)
+    go broadcastPostsToClients(mpuRoom)
+    go broadcastPostsToClients(psocRoom)
     
     server := http.Server {
         Addr: ":" + os.Getenv("PORT"),
