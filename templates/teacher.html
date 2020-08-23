@@ -47,7 +47,7 @@
         
         <script type="text/javascript" src="../resources/js/reconnecting-websocket.min.js"></script>
         <script type="text/javascript">
-            var socket = new ReconnectingWebSocket("ws://" + window.location.host + "/{{ .Id }}/update");
+            var socket = new ReconnectingWebSocket("wss://" + window.location.host + "/{{ .Id }}/update");
         </script>
         <script type="text/javascript" src="../resources/js/timeago.min.js"></script>
         <script type="text/javascript" src="../resources/js/timeago.locales.min.js"></script>
