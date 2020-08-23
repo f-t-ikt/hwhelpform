@@ -31,7 +31,7 @@ func loadTemplate(name string) *template.Template {
 }
 
 func main() {
-    templates["index"] = loadTemplate("_index")
+    templates["index"] = loadTemplate("index")
     templates["student"] = loadTemplate("student")
     templates["teacher"] = loadTemplate("teacher")
     
