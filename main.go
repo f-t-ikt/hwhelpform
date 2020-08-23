@@ -39,7 +39,7 @@ func main() {
     mpu := subject {"mpu", "MPU"}
     psoc := subject {"psoc", "PSoC"}
 
-    http.Handle("/", http.FileServer(http.Dir("./templates")))
+    http.Handle("/", http.FileServer(http.Dir("./static")))
     http.Handle("/resources/", http.StripPrefix("/resources/",http.FileServer(http.Dir("./resources"))))
     http.HandleFunc("/digital", handleTemplates("index", digital))
     http.HandleFunc("/mpu", handleTemplates("index", mpu))
