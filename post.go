@@ -11,8 +11,8 @@ type Post struct {
     Date   string `json:Date`
 }
 
-func initialBroadcast(r *room, client *websocket.Conn) {
-    r.helpList.Each(func(v interface{}) bool {
+func broadcastList(r *room, list *IdList, client *websocket.Conn) {
+    list.Each(func(v interface{}) bool {
         post := v.(*Post)
         err := client.WriteJSON(post)
         if err != nil {
@@ -23,22 +23,16 @@ func initialBroadcast(r *room, client *websocket.Conn) {
         }
         return true
     })
+}
+
+func initialBroadcast(r *room, client *websocket.Conn) {
+    broadcastList(r, r.helpList, client)
     
     if _, ok := r.clients.Load(client); !ok {
         return
     }
     
-    r.callList.Each(func(v interface{}) bool {
-        post := v.(*Post)
-        err := client.WriteJSON(post)
-        if err != nil {
-            log.Printf("error occurred while writing post to client: %v", err)
-            client.Close()
-            r.clients.Delete(client)
-            return false
-        }
-        return true
-    })
+    broadcastList(r, r.callList, client)
 }
 
 func procHelp(r *room, post *Post) {
