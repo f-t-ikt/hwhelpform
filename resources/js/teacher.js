@@ -50,7 +50,7 @@ function addCol(table, id, date, field) {
     var timeCell = row.insertCell(-1);
     var buttonCell = row.insertCell(-1);
     
-    idCell.className = "id";
+    idCell.className = "roomid";
     idCell.innerHTML = id;
     
     var time = document.createElement("div");
