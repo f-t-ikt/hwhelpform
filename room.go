@@ -27,22 +27,22 @@ func newRoom() *room {
 }
 
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-    websocket, err := r.upgrader.Upgrade(w, req, nil)
+    client, err := r.upgrader.Upgrade(w, req, nil)
     if err != nil {
         log.Fatal("error upgrading GET request to a websocket::", err)
         log.Printf("error upgrading GET request to a websocket: %v", err)
     }
-    defer websocket.Close()
+    defer client.Close()
 
-    r.clients.Store(websocket, true)
-    initialBroadcast(r, websocket)
+    r.clients.Store(client, true)
+    initialBroadcast(r, client)
     
     for {
         var post Post
-        err := websocket.ReadJSON(&post)
+        err := client.ReadJSON(&post)
         if err != nil {
             log.Printf("error occurred while reading post: %v", err)
-            r.clients.Delete(websocket)
+            r.clients.Delete(client)
             break
         }
         
