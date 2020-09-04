@@ -37,7 +37,8 @@ function iso8601(date) {
 }
 
 function send(method) {
-    if (room.value == "") return;
+    const roomId = room.value;
+    if (roomId == "") return;
     if (socket.readyState > WebSocket.OPEN) {
         document.getElementById("top").innerHTML += "<div style=\"color: red;\">切断されました。リロードしてください。</div>";
         return;
@@ -46,7 +47,7 @@ function send(method) {
     socket.send(JSON.stringify(
         {
             Method: method,
-            Id: Number(room.value),
+            Id: Number(roomId),
             Date: iso8601(new Date())
         }
     ));
