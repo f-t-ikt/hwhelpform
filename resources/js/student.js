@@ -52,6 +52,8 @@ function send(method) {
         }
     }
     
+    oldRoomId = roomId;
+    
     socket.send(JSON.stringify(
         {
             Method: method,
