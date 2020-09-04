@@ -36,12 +36,20 @@ function iso8601(date) {
     + ":" + date.getUTCSeconds() + "Z";
 }
 
+var oldRoomId = "";
+
 function send(method) {
     const roomId = room.value;
     if (roomId == "") return;
     if (socket.readyState > WebSocket.OPEN) {
         document.getElementById("top").innerHTML += "<div style=\"color: red;\">切断されました。リロードしてください。</div>";
         return;
+    }
+    
+    if (roomId != oldRoomId) {
+        if (!window.confirm(roomId + "番でよろしいですか？")) {
+            return;
+        }
     }
     
     socket.send(JSON.stringify(
