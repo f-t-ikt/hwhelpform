@@ -29,8 +29,9 @@ func newRoom() *room {
 func (r *room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
     client, err := r.upgrader.Upgrade(w, req, nil)
     if err != nil {
-        log.Fatal("error upgrading GET request to a websocket::", err)
+        // log.Fatal("error upgrading GET request to a websocket::", err)
         log.Printf("error upgrading GET request to a websocket: %v", err)
+        return;
     }
     defer client.Close()
 
